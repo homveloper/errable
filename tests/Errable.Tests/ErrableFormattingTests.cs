@@ -66,6 +66,11 @@ public class ErrableFormattingTests
         Assert.Contains("[DEBUG_ERROR] Debug message", result);
         Assert.Contains("Stack:", result);
         Assert.Contains("ErrableFormattingTests", result); // Should contain calling method
+
+        // Verify that the stack trace is filtered (should not contain test framework noise)
+        Assert.DoesNotContain("Xunit.", result);
+        Assert.DoesNotContain("System.Runtime.", result);
+        Assert.DoesNotContain("Microsoft.TestPlatform.", result);
     }
 
     [Fact]

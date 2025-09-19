@@ -354,7 +354,7 @@ public sealed class ErrableBuilder
             message: message,
             context: finalContext,
             cause: _cause,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true),
+            stackTrace: new FilteredStackTrace(skipFrames: 1),
             domain: _domain,
             tags: _tags.Count > 0 ? _tags.AsReadOnly() : null,
             publicMessage: _publicMessage,

@@ -18,7 +18,7 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
     private readonly string _message;
     private readonly IReadOnlyDictionary<string, object> _context;
     private readonly IError? _cause;
-    private readonly StackTrace? _stackTrace;
+    private readonly FilteredStackTrace? _stackTrace;
     private readonly DateTime _timestamp;
     private readonly string? _domain;
     private readonly IReadOnlyList<string>? _tags;
@@ -39,7 +39,7 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
         string message,
         IReadOnlyDictionary<string, object>? context = null,
         IError? cause = null,
-        StackTrace? stackTrace = null,
+        FilteredStackTrace? stackTrace = null,
         string? domain = null,
         IReadOnlyList<string>? tags = null,
         string? publicMessage = null,
@@ -55,7 +55,7 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
         _message = message ?? throw new ArgumentNullException(nameof(message));
         _context = context ?? new Dictionary<string, object>();
         _cause = cause;
-        _stackTrace = stackTrace ?? new StackTrace(skipFrames: 2, fNeedFileInfo: true);
+        _stackTrace = stackTrace ?? new FilteredStackTrace(skipFrames: 2);
         _timestamp = DateTime.UtcNow;
         _domain = domain;
         _tags = tags;
@@ -78,7 +78,7 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
         _message = info.GetString(nameof(_message)) ?? string.Empty;
         _context = (IReadOnlyDictionary<string, object>)(info.GetValue(nameof(_context), typeof(IReadOnlyDictionary<string, object>)) ?? new Dictionary<string, object>());
         _cause = (IError?)info.GetValue(nameof(_cause), typeof(IError));
-        _stackTrace = (StackTrace?)info.GetValue(nameof(_stackTrace), typeof(StackTrace));
+        _stackTrace = (FilteredStackTrace?)info.GetValue(nameof(_stackTrace), typeof(FilteredStackTrace));
         _timestamp = info.GetDateTime(nameof(_timestamp));
         _domain = info.GetString(nameof(_domain));
         _tags = (IReadOnlyList<string>?)info.GetValue(nameof(_tags), typeof(IReadOnlyList<string>));
@@ -130,9 +130,9 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
     public DateTime Timestamp => _timestamp;
 
     /// <summary>
-    /// Gets the stack trace captured when this error was created.
+    /// Gets the filtered stack trace captured when this error was created.
     /// </summary>
-    public StackTrace? StackTrace => _stackTrace;
+    public FilteredStackTrace? StackTrace => _stackTrace;
 
     /// <summary>
     /// Gets the domain this error belongs to.

@@ -1,7 +1,15 @@
+using Xunit.Abstractions;
+
 namespace Errable.Tests;
 
 public class ErrableTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public ErrableTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
     /// <summary>
     /// Test implementation of Error interface for testing purposes
     /// </summary>
@@ -191,5 +199,117 @@ public class ErrableTests
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Null(result.Value);
+    }
+
+    [Fact]
+    public void TestErrorLogging_WithStackTrace()
+    {
+        // Arrange - Erratic 에러 객체 생성 (스택 트레이스 자동 캡처)
+        var erraticError = ErrableFactory.Error("Test Erratic error with captured stack trace");
+        var erraticResult = Errable<int>.Wrap(erraticError);
+
+        _output.WriteLine($"=== ERRATIC ERROR WITH STACK TRACE ===");
+        _output.WriteLine($"Error Message: {erraticResult.Error.Error()}");
+        _output.WriteLine($"Error Type: {erraticResult.Error.GetType().Name}");
+
+        // Erratic의 StackTrace 확인 및 출력
+        if (erraticResult.Error is Erratic erratic)
+        {
+            _output.WriteLine($"Has StackTrace: {erratic.StackTrace != null}");
+
+            // Debug 포맷으로 스택 트레이스 포함 전체 정보 출력
+            _output.WriteLine($"\nDEBUG FORMAT (with StackTrace):");
+            _output.WriteLine(erratic.ToString("D", null));
+
+            // 직접 StackTrace 속성 접근
+            _output.WriteLine($"\nDIRECT STACK TRACE ACCESS:");
+            _output.WriteLine(erratic.StackTrace?.ToString());
+        }
+
+        // Assert
+        Assert.True(erraticResult.IsError);
+        Assert.IsType<Erratic>(erraticResult.Error);
+
+        // Verify that the stack trace is filtered (should not contain xUnit frames)
+        if (erraticResult.Error is Erratic erraticForVerification)
+        {
+            var stackTraceString = erraticForVerification.StackTrace?.ToString() ?? "";
+            Assert.DoesNotContain("Xunit.", stackTraceString);
+            Assert.DoesNotContain("System.Runtime.", stackTraceString);
+            Assert.DoesNotContain("Microsoft.TestPlatform.", stackTraceString);
+            _output.WriteLine($"\nFILTERED STACK TRACE VERIFICATION PASSED:");
+            _output.WriteLine($"No test framework noise detected in stack trace");
+        }
+    }
+
+    [Fact]
+    public void TestNestedErrorLogging_WithStackTrace()
+    {
+        // Arrange & Act - 중첩된 함수 호출에서 에러 발생
+        var nestedResult = CallD();
+
+        _output.WriteLine($"=== NESTED ERROR WITH STACK TRACE ===");
+        _output.WriteLine($"Error Message: {nestedResult.Error.Error()}");
+        _output.WriteLine($"Error Type: {nestedResult.Error.GetType().Name}");
+
+        // 중첩된 스택 트레이스 확인 및 출력
+        if (nestedResult.Error is Erratic erratic)
+        {
+            _output.WriteLine($"Has StackTrace: {erratic.StackTrace != null}");
+
+            // Debug 포맷으로 스택 트레이스 포함 전체 정보 출력
+            _output.WriteLine($"\nDEBUG FORMAT (nested call stack):");
+            _output.WriteLine(erratic.ToString("D", null));
+
+            // 직접 StackTrace 속성 접근
+            _output.WriteLine($"\nDIRECT NESTED STACK TRACE ACCESS:");
+            _output.WriteLine(erratic.StackTrace?.ToString());
+        }
+
+        // Assert
+        Assert.True(nestedResult.IsError);
+        Assert.IsType<Erratic>(nestedResult.Error);
+
+        // 중첩 호출 스택이 모두 포함되어 있는지 확인
+        if (nestedResult.Error is Erratic erraticForVerification)
+        {
+            var stackTraceString = erraticForVerification.StackTrace?.ToString() ?? "";
+
+            // 각 함수가 스택 트레이스에 포함되어 있는지 확인
+            Assert.Contains("CallA", stackTraceString);
+            Assert.Contains("CallB", stackTraceString);
+            Assert.Contains("CallC", stackTraceString);
+            Assert.Contains("CallD", stackTraceString);
+
+            _output.WriteLine($"\nNESTED CALL VERIFICATION PASSED:");
+            _output.WriteLine($"All nested function calls (D->C->B->A) detected in stack trace");
+        }
+    }
+
+    // 중첩된 함수 호출 체인: D() -> C() -> B() -> A()
+    private Errable<string> CallD()
+    {
+        _output.WriteLine("CallD() executed");
+        return CallC();
+    }
+
+    private Errable<string> CallC()
+    {
+        _output.WriteLine("CallC() executed");
+        return CallB();
+    }
+
+    private Errable<string> CallB()
+    {
+        _output.WriteLine("CallB() executed");
+        return CallA();
+    }
+
+    private Errable<string> CallA()
+    {
+        _output.WriteLine("CallA() executed - creating error");
+        // 여기서 실제 에러 발생
+        var error = ErrableFactory.Error("Nested error from CallA in call chain D->C->B->A");
+        return Errable<string>.Wrap(error);
     }
 }

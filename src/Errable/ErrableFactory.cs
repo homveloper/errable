@@ -20,7 +20,7 @@ public static class ErrableFactory
         return new Erratic(
             code: new Code(""),
             message: message,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
@@ -56,7 +56,7 @@ public static class ErrableFactory
             code: new Code(""),
             message: errorMessage,
             cause: cause,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
@@ -89,7 +89,7 @@ public static class ErrableFactory
             return new Erratic(
                 code: new Code(""),
                 message: "",
-                stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+                stackTrace: new FilteredStackTrace(skipFrames: 1)
             );
         }
 
@@ -101,7 +101,7 @@ public static class ErrableFactory
             code: originalCode,
             message: originalMessage,
             cause: result.Error,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
@@ -122,7 +122,7 @@ public static class ErrableFactory
             return new Erratic(
                 code: new Code(""),
                 message: "",
-                stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+                stackTrace: new FilteredStackTrace(skipFrames: 1)
             );
         }
 
@@ -134,7 +134,7 @@ public static class ErrableFactory
             code: originalCode,
             message: message,
             cause: result.Error,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
@@ -148,7 +148,7 @@ public static class ErrableFactory
         return new Erratic(
             code: new Code(""),
             message: ex.Message,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
@@ -165,7 +165,7 @@ public static class ErrableFactory
         return new Erratic(
             code: new Code(""),
             message: message,
-            stackTrace: new StackTrace(skipFrames: 1, fNeedFileInfo: true)
+            stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
     }
 
