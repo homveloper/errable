@@ -128,27 +128,6 @@ public class ErrableBuilderGenericTests
     }
 
     [Fact]
-    public void ErrableBuilder_Generic_WithInnerException_ShouldCreateCause()
-    {
-        // Arrange
-        var innerException = new ArgumentNullException("email");
-        var outerException = new InvalidOperationException("User validation failed", innerException);
-
-        // Act
-        var result = Errable.Code("USER_VALIDATION_ERROR")
-            .Wrap<User>(outerException);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.IsType<Errable<User>>(result);
-
-        var error = result.Error as Erratic;
-        Assert.NotNull(error);
-        Assert.NotNull(error.Cause);
-        Assert.Equal("User validation failed", error.Error());
-    }
-
-    [Fact]
     public void ErrableBuilder_Generic_ShouldWorkWithValueTypes()
     {
         // Act

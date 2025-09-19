@@ -167,23 +167,6 @@ public class ErrableFormattingTests
     }
 
     [Fact]
-    public void Errable_WithCause_FullFormat_ShouldShowCause()
-    {
-        // Arrange
-        var causeError = Errable.Error("Root cause error");
-        var error = Errable.Code("WRAPPER")
-            .Cause(causeError)
-            .Error("Wrapper error") as IFormattable;
-
-        // Act
-        var result = error!.ToString("F", null);
-
-        // Assert
-        Assert.Contains("[WRAPPER] Wrapper error", result);
-        Assert.Contains("Caused by: Root cause error", result);
-    }
-
-    [Fact]
     public void Errable_StringInterpolation_ShouldUseDefaultFormat()
     {
         // Arrange

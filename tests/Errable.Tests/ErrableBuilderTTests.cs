@@ -127,9 +127,6 @@ public class ErrableBuilderTTests
 
         var builder16 = builder15.Tenant("tenant456", ("plan", "pro"));
         Assert.IsType<ErrableBuilder<User>>(builder16);
-
-        var builder17 = builder16.Cause(Errable.Error("Root cause"));
-        Assert.IsType<ErrableBuilder<User>>(builder17);
     }
 
     [Fact]

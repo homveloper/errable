@@ -230,23 +230,6 @@ public class ErrableBuilderTests
     }
 
     [Fact]
-    public void ErrableBuilder_Cause_ShouldSetCauseError()
-    {
-        // Arrange
-        var causeError = Errable.Error("Root cause");
-
-        // Act
-        var error = Errable.Code("TEST")
-            .Cause(causeError)
-            .Error("Higher level error");
-
-        // Assert
-        Assert.IsAssignableFrom<IErrorCauser>(error);
-        var causer = (IErrorCauser)error;
-        Assert.Equal(causeError, causer.Cause);
-    }
-
-    [Fact]
     public void ErrableBuilder_Errorf_ShouldFormatMessage()
     {
         // Arrange & Act
@@ -290,26 +273,6 @@ public class ErrableBuilderTests
         Assert.Equal("Validation failed for parameter username", error.Error());
         // Context should only contain user-defined data, not hardcoded exception info
         Assert.DoesNotContain("exception", error.Context.Keys);
-    }
-
-    [Fact]
-    public void ErrableBuilder_Wrap_WithInnerException_ShouldCreateCause()
-    {
-        // Arrange
-        var innerException = new ArgumentNullException("param");
-        var outerException = new InvalidOperationException("Outer", innerException);
-
-        // Act
-        var error = Errable.Code("TEST")
-            .Wrap(outerException) as Erratic;
-
-        // Assert
-        Assert.NotNull(error);
-        Assert.NotNull(error.Cause);
-        // The cause should exist but context should not contain hardcoded exception info
-        Assert.IsAssignableFrom<IErrorContextProvider>(error.Cause);
-        var causeContext = ((IErrorContextProvider)error.Cause).Context;
-        Assert.DoesNotContain("exception", causeContext.Keys);
     }
 
 

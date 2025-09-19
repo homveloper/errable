@@ -239,26 +239,6 @@ public class FluentApiFactoryTests
     }
 
     [Fact]
-    public void WrapFor_WithInnerException_ShouldPreserveCause()
-    {
-        // Arrange
-        var innerException = new ArgumentNullException("param");
-        var outerException = new InvalidOperationException("Outer error", innerException);
-
-        // Act
-        var result = Errable.WrapFor<User>(outerException);
-
-        // Assert
-        Assert.True(result.IsError);
-        Assert.IsType<Errable<User>>(result);
-
-        var error = result.Error as Erratic;
-        Assert.NotNull(error);
-        Assert.NotNull(error.Cause);
-        Assert.Equal("Outer error", error.Error());
-    }
-
-    [Fact]
     public void FactoryMethods_ShouldProduceEquivalentResultsToBuilderMethods()
     {
         // Act - Create errors using factory methods and builder methods

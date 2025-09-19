@@ -69,7 +69,7 @@ public class UsageExampleTests
 
             return Errable.Code("USER_NOT_FOUND")
                     .With("username", username)
-                    .Errorf("User '{0}' not found", username);
+                    .Errorf<string>("User '{0}' not found", username);
         }
 
         // Improved version using extension method
@@ -136,11 +136,7 @@ public class UsageExampleTests
             {
                 // Wrap the database error with service context
                 return Errable<string>.Wrap(
-                    Errable.Code("SERVICE_ERROR")
-                        .With("userId", userId)
-                        .With("service", "UserService")
-                        .Cause(dbResult.Error) // Chain the underlying error
-                        .Errorf("Failed to retrieve user {0}", userId)
+                    Errable.Wrapf(dbResult, "Failed to retrieve user {0}", userId)
                 );
             }
             return dbResult.Value;

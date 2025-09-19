@@ -228,17 +228,6 @@ public sealed class ErrableBuilder<T>
         return this;
     }
 
-    /// <summary>
-    /// Sets the underlying cause of this error.
-    /// </summary>
-    /// <param name="cause">The cause error</param>
-    /// <returns>This builder instance for method chaining</returns>
-    public ErrableBuilder<T> Cause(IError cause)
-    {
-        _cause = cause;
-        return this;
-    }
-
     #endregion
 
     #region Termination Methods
