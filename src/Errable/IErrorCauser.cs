@@ -1,4 +1,5 @@
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// Interface for errors that wrap or are caused by other errors.
@@ -10,4 +11,5 @@ public interface IErrorCauser
     /// Gets the underlying error that caused this error, if any.
     /// </summary>
     IError? Cause { get; }
+}
 }

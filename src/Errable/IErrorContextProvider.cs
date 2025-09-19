@@ -1,4 +1,7 @@
-namespace Errable;
+using System.Collections.Generic;
+
+namespace Errable
+{
 
 /// <summary>
 /// Interface for errors that provide contextual information.
@@ -10,4 +13,5 @@ public interface IErrorContextProvider
     /// Gets the context information associated with this error.
     /// </summary>
     IReadOnlyDictionary<string, object> Context { get; }
+}
 }

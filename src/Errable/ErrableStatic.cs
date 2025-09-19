@@ -1,4 +1,7 @@
-namespace Errable;
+using System;
+
+namespace Errable
+{
 
 /// <summary>
 /// Static factory class for creating Error instances and starting builder chains.
@@ -84,7 +87,7 @@ public static class Errable
     /// </summary>
     /// <typeparam name="T">The type for the final Errable result</typeparam>
     /// <returns>A new ErrableBuilder&lt;T&gt; instance for method chaining</returns>
-    public static ErrableBuilder<T> For<T>() => new();
+    public static ErrableBuilder<T> For<T>() => new ErrableBuilder<T>();
 
     /// <summary>
     /// Creates a type-specific fluent builder for building Errable&lt;T&gt; instances with an initial error code.
@@ -93,7 +96,7 @@ public static class Errable
     /// <typeparam name="T">The type for the final Errable result</typeparam>
     /// <param name="code">The error code</param>
     /// <returns>A new ErrableBuilder&lt;T&gt; instance for method chaining</returns>
-    public static ErrableBuilder<T> For<T>(Code code) => new(code);
+    public static ErrableBuilder<T> For<T>(Code code) => new ErrableBuilder<T>(code);
 
     /// <summary>
     /// Creates a type-specific fluent builder for building Errable&lt;T&gt; instances with an initial error code.
@@ -102,7 +105,7 @@ public static class Errable
     /// <typeparam name="T">The type for the final Errable result</typeparam>
     /// <param name="code">The error code as string</param>
     /// <returns>A new ErrableBuilder&lt;T&gt; instance for method chaining</returns>
-    public static ErrableBuilder<T> For<T>(string code) => new(new Code(code));
+    public static ErrableBuilder<T> For<T>(string code) => new ErrableBuilder<T>(new Code(code));
 
     #endregion
 
@@ -552,4 +555,5 @@ public static class E
     public static ErrableBuilder Tenant(string id, params (string Key, object Value)[] attributes) => Errable.Tenant(id, attributes);
 
     #endregion
+}
 }

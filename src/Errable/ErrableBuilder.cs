@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// A fluent builder for creating rich Error instances with contextual information.
@@ -9,10 +13,10 @@ namespace Errable;
 public sealed class ErrableBuilder
 {
     private Code _code;
-    private readonly Dictionary<string, object> _context = new();
+    private readonly Dictionary<string, object> _context = new Dictionary<string, object>();
     private IError? _cause;
     private string? _domain;
-    private readonly List<string> _tags = new();
+    private readonly List<string> _tags = new List<string>();
     private string? _publicMessage;
     private string? _hint;
     private string? _owner;
@@ -369,4 +373,5 @@ public sealed class ErrableBuilder
     }
 
     #endregion
+}
 }

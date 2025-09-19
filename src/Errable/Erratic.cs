@@ -1,9 +1,14 @@
+using System;
+using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// The concrete implementation of Error that provides rich error information and framework integration.
@@ -198,12 +203,18 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
     {
         return format?.ToUpperInvariant() switch
         {
-            "F" or "FULL" => FormatFull(),
-            "C" or "CODE" => FormatCodeAndMessage(),
-            "D" or "DEBUG" => FormatDebug(),
-            "J" or "JSON" => FormatJson(),
-            "P" or "PUBLIC" => FormatPublic(),
-            "L" or "LOG" => FormatLog(),
+            "F" => FormatFull(),
+            "FULL" => FormatFull(),
+            "C" => FormatCodeAndMessage(),
+            "CODE" => FormatCodeAndMessage(),
+            "D" => FormatDebug(),
+            "DEBUG" => FormatDebug(),
+            "J" => FormatJson(),
+            "JSON" => FormatJson(),
+            "P" => FormatPublic(),
+            "PUBLIC" => FormatPublic(),
+            "L" => FormatLog(),
+            "LOG" => FormatLog(),
             _ => _message
         };
     }
@@ -353,4 +364,5 @@ public sealed class Erratic : IError, IErrorCoder, IErrorCauser, IErrorContextPr
     private string FormatLog() => $"{_timestamp:yyyy-MM-dd HH:mm:ss.fff} [{_code}] {_message}";
 
     #endregion
+}
 }

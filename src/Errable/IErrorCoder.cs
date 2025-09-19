@@ -1,4 +1,5 @@
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// Interface for errors that provide a code property.
@@ -10,4 +11,5 @@ public interface IErrorCoder
     /// Gets the error code for this error.
     /// </summary>
     Code Code { get; }
+}
 }

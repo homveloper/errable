@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// A filtered version of StackTrace that excludes test framework and system noise,
@@ -205,4 +209,5 @@ public sealed class FilteredStackTrace : ISerializable
 
         return _frames[index];
     }
+}
 }

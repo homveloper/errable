@@ -1,4 +1,8 @@
-namespace Errable;
+using System;
+using System.Collections.Generic;
+
+namespace Errable
+{
 
 /// <summary>
 /// A Result-pattern struct that represents either a successful value or an error.
@@ -7,7 +11,7 @@ namespace Errable;
 /// <typeparam name="T">The type of the successful value</typeparam>
 public readonly struct Errable<T>
 {
-    private readonly T? _value;
+    private readonly T _value;
     private readonly IError? _error;
     private readonly bool _isSuccess;
 
@@ -47,7 +51,7 @@ public readonly struct Errable<T>
     /// Gets the successful value. Throws if this Errable represents an error.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when accessing Value on an error Errable</exception>
-    public T Value => _isSuccess ? _value! : throw new InvalidOperationException("Cannot access Value on an error Errable");
+    public T Value => _isSuccess ? _value : throw new InvalidOperationException("Cannot access Value on an error Errable");
 
     /// <summary>
     /// Gets the error. Throws if this Errable represents a successful value.
@@ -64,7 +68,7 @@ public readonly struct Errable<T>
     {
         if (_isSuccess)
         {
-            value = _value!;
+            value = _value;
             return true;
         }
 
@@ -94,20 +98,20 @@ public readonly struct Errable<T>
     /// </summary>
     /// <param name="defaultValue">The default value to return if this is an error</param>
     /// <returns>The value or default value</returns>
-    public T GetValueOrDefault(T defaultValue = default!) => _isSuccess ? _value! : defaultValue;
+    public T GetValueOrDefault(T defaultValue = default!) => _isSuccess ? _value : defaultValue;
 
     /// <summary>
     /// Implicit conversion from a value to a successful Errable.
     /// </summary>
     /// <param name="value">The value</param>
-    public static implicit operator Errable<T>(T value) => new(value);
+    public static implicit operator Errable<T>(T value) => new Errable<T>(value);
 
     /// <summary>
     /// Creates a failed Errable by wrapping an Error.
     /// </summary>
     /// <param name="error">The error to wrap</param>
     /// <returns>A failed Errable</returns>
-    public static Errable<T> Wrap(IError error) => new(error);
+    public static Errable<T> Wrap(IError error) => new Errable<T>(error);
 
     /// <summary>
     /// Pattern matches on the Errable, executing one function for success and another for error.
@@ -118,7 +122,7 @@ public readonly struct Errable<T>
     /// <returns>The result of the executed function</returns>
     public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<IError, TResult> onError)
     {
-        return _isSuccess ? onSuccess(_value!) : onError(_error!);
+        return _isSuccess ? onSuccess(_value) : onError(_error!);
     }
 
     /// <summary>
@@ -181,4 +185,5 @@ public readonly struct Errable<T>
     /// <param name="right">Right operand</param>
     /// <returns>True if not equal</returns>
     public static bool operator !=(Errable<T> left, Errable<T> right) => !left.Equals(right);
+}
 }

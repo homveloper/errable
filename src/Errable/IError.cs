@@ -1,4 +1,5 @@
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// The minimal error interface that all errors must implement.
@@ -12,4 +13,5 @@ public interface IError
     /// </summary>
     /// <returns>A string describing the error</returns>
     string Error();
+}
 }

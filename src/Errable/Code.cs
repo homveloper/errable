@@ -1,4 +1,7 @@
-namespace Errable;
+using System;
+
+namespace Errable
+{
 
 /// <summary>
 /// A value type that can hold either a string or int error code.
@@ -30,13 +33,13 @@ public readonly struct Code : IEquatable<Code>
     /// Implicitly converts a string to a Code.
     /// </summary>
     /// <param name="code">The string error code</param>
-    public static implicit operator Code(string code) => new(code);
+    public static implicit operator Code(string code) => new Code(code);
 
     /// <summary>
     /// Implicitly converts an int to a Code.
     /// </summary>
     /// <param name="code">The integer error code</param>
-    public static implicit operator Code(int code) => new(code);
+    public static implicit operator Code(int code) => new Code(code);
 
     /// <summary>
     /// Checks if two Code instances are equal.
@@ -79,4 +82,5 @@ public readonly struct Code : IEquatable<Code>
     /// </summary>
     /// <returns>A hash code for the current Code</returns>
     public override int GetHashCode() => _value?.GetHashCode() ?? 0;
+}
 }

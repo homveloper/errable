@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 
-namespace Errable;
+namespace Errable
+{
 
 /// <summary>
 /// Static factory class for creating Error instances and starting builder chains.
@@ -329,5 +331,5 @@ public static class ErrableFactory
 
 
     #endregion
-
+}
 }
