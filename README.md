@@ -157,7 +157,4 @@ private Errable<PaymentResult> SimulatePaymentProcessing(string orderId, decimal
 이 패키지는 다음 프로젝트들로부터 영감을 얻어 개발되었습니다.
 
 *   [amantinband/error-or](https://github.com/amantinband/error-or)
-*   [samber/oops](https://github.com/samber/oops)�� 패키지는 다음 프로젝트들로부터 영감을 얻어 개발되었습니다.
-
-*   [amantinband/error-or](https://github.com/amantinband/error-or)
 *   [samber/oops](https://github.com/samber/oops)
