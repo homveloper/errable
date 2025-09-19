@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Errable</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>Errable Contributors</Authors>
+    <Description>Go-like error handling library for C# with fluent API and automatic framework integration</Description>
+    <PackageTags>error-handling;go-style;result-pattern;fluent-api</PackageTags>
+    <PackageProjectUrl>https://github.com/errable/errable</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/errable/errable</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="Serilog" Version="3.1.1" Condition="$(DefineConstants.Contains('SERILOG'))" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" Condition="$(DefineConstants.Contains('EXTENSIONS_LOGGING'))" />
+  </ItemGroup>
+
+</Project>
