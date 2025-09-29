@@ -118,10 +118,13 @@ public class CodeTests
     }
 
     [Fact]
-    public void Code_StringConstructor_NullValue_ShouldThrowArgumentNullException()
+    public void Code_StringConstructor_NullValue_ShouldUseEmptyString()
     {
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new Code((string)null!));
+        // Act
+        var code = new Code((string)null!);
+
+        // Assert
+        Assert.Equal(string.Empty, code.ToString());
     }
 
     [Fact]
