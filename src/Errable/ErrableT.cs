@@ -105,13 +105,13 @@ public readonly struct Errable<T>
     /// </summary>
     /// <param name="value">The value</param>
     public static implicit operator Errable<T>(T value) => new Errable<T>(value);
-
+    
     /// <summary>
-    /// Creates a failed Errable by wrapping an Error.
-    /// </summary>
-    /// <param name="error">The error to wrap</param>
-    /// <returns>A failed Errable</returns>
-    public static Errable<T> Wrap(IError error) => new Errable<T>(error);
+        /// Creates a failed Errable by wrapping an Error.
+        /// </summary>
+        /// <param name="error">The error to wrap</param>
+        /// <returns>A failed Errable</returns>
+        public static Errable<T> Wrap(IError error) => new Errable<T>(error);
 
     /// <summary>
     /// Pattern matches on the Errable, executing one function for success and another for error.
@@ -147,8 +147,16 @@ public readonly struct Errable<T>
         if (_isSuccess)
             return EqualityComparer<T>.Default.Equals(_value, other._value);
 
-        return ReferenceEquals(_error, other._error) ||
-               (_error != null && other._error != null && _error.Error() == other._error.Error());
+        // Same reference check (fast path)
+        if (ReferenceEquals(_error, other._error))
+            return true;
+
+        // Explicit null check
+        if (_error == null || other._error == null)
+            return false;
+
+        // String comparison (expensive, last resort)
+        return _error.Error() == other._error.Error();
     }
 
     /// <summary>
@@ -167,7 +175,7 @@ public readonly struct Errable<T>
         if (_isSuccess)
             return HashCode.Combine(_isSuccess, _value);
 
-        return HashCode.Combine(_isSuccess, _error?.Error());
+        return HashCode.Combine(_isSuccess, _error?.GetHashCode());
     }
 
     /// <summary>
