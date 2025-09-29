@@ -9,6 +9,11 @@ namespace Errable
 /// </summary>
 public readonly struct Code : IEquatable<Code>
 {
+    /// <summary>
+    /// Represents an empty error code.
+    /// </summary>
+    public static readonly Code Empty = new Code(string.Empty, allowEmpty: true);
+
     private readonly object? _value;
 
     /// <summary>
@@ -27,6 +32,14 @@ public readonly struct Code : IEquatable<Code>
     public Code(int code)
     {
         _value = code;
+    }
+
+    /// <summary>
+    /// Internal constructor for creating empty code.
+    /// </summary>
+    private Code(string code, bool allowEmpty)
+    {
+        _value = allowEmpty ? code : (code ?? throw new ArgumentNullException(nameof(code)));
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using CodeType = Errable.Code;
 
 namespace Errable
 {
@@ -20,7 +21,7 @@ public static class ErrableFactory
     public static IError Error(string message)
     {
         return new Erratic(
-            code: new Code(""),
+            code: CodeType.Empty,
             message: message,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
@@ -55,7 +56,7 @@ public static class ErrableFactory
         }
 
         return new Erratic(
-            code: new Code(""),
+            code: CodeType.Empty,
             message: errorMessage,
             cause: cause,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
@@ -89,19 +90,15 @@ public static class ErrableFactory
         {
             // Return zero-value error for successful case
             return new Erratic(
-                code: new Code(""),
+                code: CodeType.Empty,
                 message: "",
                 stackTrace: new FilteredStackTrace(skipFrames: 1)
             );
         }
 
-        // Preserve the original error's code and message
-        Code originalCode = result.Error is IErrorCoder coder ? coder.Code : new Code("");
-        string originalMessage = result.Error.Error();
-
         return new Erratic(
-            code: originalCode,
-            message: originalMessage,
+            code: CodeType.Empty,
+            message: "",
             cause: result.Error,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
@@ -122,7 +119,7 @@ public static class ErrableFactory
         {
             // Return zero-value error for successful case
             return new Erratic(
-                code: new Code(""),
+                code: CodeType.Empty,
                 message: "",
                 stackTrace: new FilteredStackTrace(skipFrames: 1)
             );
@@ -130,10 +127,9 @@ public static class ErrableFactory
 
         // Use formatted message instead of original
         var message = string.Format(format, args);
-        Code originalCode = result.Error is IErrorCoder coder ? coder.Code : new Code("");
 
         return new Erratic(
-            code: originalCode,
+            code: CodeType.Empty,
             message: message,
             cause: result.Error,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
@@ -148,7 +144,7 @@ public static class ErrableFactory
     public static IError Except(Exception ex)
     {
         return new Erratic(
-            code: new Code(""),
+            code: CodeType.Empty,
             message: ex.Message,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
@@ -165,7 +161,7 @@ public static class ErrableFactory
     {
         string message = string.Format(format, args);
         return new Erratic(
-            code: new Code(""),
+            code: CodeType.Empty,
             message: message,
             stackTrace: new FilteredStackTrace(skipFrames: 1)
         );
@@ -180,9 +176,29 @@ public static class ErrableFactory
     /// </summary>
     /// <param name="code">The error code</param>
     /// <returns>A new ErrableBuilder instance for method chaining</returns>
-    public static ErrableBuilder Code(Code code)
+    public static ErrableBuilder Code(CodeType code)
     {
         return new ErrableBuilder(code);
+    }
+
+    /// <summary>
+    /// Starts a fluent builder chain with the specified error code string.
+    /// </summary>
+    /// <param name="code">The error code string</param>
+    /// <returns>A new ErrableBuilder instance for method chaining</returns>
+    public static ErrableBuilder Code(string code)
+    {
+        return new ErrableBuilder(new CodeType(code));
+    }
+
+    /// <summary>
+    /// Starts a fluent builder chain with the specified error code integer.
+    /// </summary>
+    /// <param name="code">The error code integer</param>
+    /// <returns>A new ErrableBuilder instance for method chaining</returns>
+    public static ErrableBuilder Code(int code)
+    {
+        return new ErrableBuilder(new CodeType(code));
     }
 
     /// <summary>
@@ -193,7 +209,7 @@ public static class ErrableFactory
     /// <returns>A new ErrableBuilder instance for method chaining</returns>
     public static ErrableBuilder With(string key, object value)
     {
-        return new ErrableBuilder(new Code("")).With(key, value);
+        return new ErrableBuilder(CodeType.Empty).With(key, value);
     }
 
     /// <summary>
