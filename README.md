@@ -1,17 +1,55 @@
 # Errable
+> **Error as Value** - .NET을 위한 타입-안전 에러 처리 라이브러리
 
 ## 개요 (Overview)
 
-Errable은 .NET을 위한 강력하고 유연한 오류 처리 라이브러리입니다. 기존의 예외 처리 방식 대신, 함수형 프로그래밍에서 영감을 받은 `Result` 패턴을 사용하여 오류를 값으로 다룰 수 있게 해줍니다. 이를 통해 코드의 안정성과 가독성을 높이고, 오류 처리 로직을 명확하게 표현할 수 있습니다.
+Errable은 **"Error as Value"** 철학을 따르는 .NET 오류 처리 라이브러리입니다. Go와 Rust에서 영감을 받아, 예외(Exception)를 던지는 대신 **오류를 일반 값처럼 반환하고 처리**합니다. 이를 통해 숨겨진 제어 흐름을 제거하고, 컴파일러가 오류 처리를 강제할 수 있게 하여 더 안전하고 예측 가능한 코드를 작성할 수 있습니다.
+
+### 왜 Error as Value인가?
+
+**예외 처리의 문제점**:
+- ❌ 숨겨진 제어 흐름 (어디서 예외가 발생할지 명시되지 않음)
+- ❌ 성능 비용 (스택 언와인딩, 예외 객체 생성)
+- ❌ 컴파일러가 오류 처리를 강제하지 못함
+
+**Error as Value의 장점**:
+- ✅ 명시적인 오류 처리 (함수 시그니처에 오류 가능성 표현)
+- ✅ 타입 안전성 (컴파일 타임에 오류 체크)
+- ✅ 제로 오버헤드 (struct 기반, 예외 없음)
+- ✅ 함수형 스타일 (패턴 매칭, 체이닝)
+
+**Before (예외 방식)**:
+```csharp
+// 어디서 예외가 발생할지 알 수 없음
+int GetUserAge(string username)
+{
+    if (username == "john") return 25;
+    throw new UserNotFoundException(username); // 숨겨진 제어 흐름
+}
+```
+
+**After (Error as Value)**:
+```csharp
+// 반환 타입에 오류 가능성이 명시됨
+Errable<int> GetUserAge(string username)
+{
+    if (username == "john") return 25;
+    return Errable.For<int>()
+        .Code("USER_NOT_FOUND")
+        .Error($"User '{username}' not found"); // 값으로 반환
+}
+```
 
 ## 주요 특징 (Features)
 
-*   **타입-안전 결과 패턴**: `Errable<T>` 타입을 통해 성공 값 또는 오류 객체를 명확하게 반환합니다.
-*   **Fluent API**: `Errable.Code("...").With(...).Error(...)`와 같이 메서드 체이닝을 통해 풍부한 컨텍스트를 가진 오류 객체를 쉽게 생성할 수 있습니다.
-*   **자세한 오류 컨텍스트**: 오류 코드, 태그, 사용자 정의 데이터, 원인(Cause) 등 상세한 정보를 오류 객체에 담을 수 있습니다.
-*   **패턴 매칭**: `Match` 메서드를 사용하여 성공과 실패 케이스를 깔끔하게 처리할 수 있습니다.
-*   **타입 추론 지원**: `Errable.For<T>()` 팩토리를 통해 제네릭 타입 추론을 완벽하게 지원하여, 더 깔끔하고 읽기 좋은 코드를 작성할 수 있습니다.
-*   **다양한 포맷팅**: 생성된 오류 객체를 로그, 디버깅, 공개 메시지 등 다양한 목적에 맞게 포맷팅할 수 있습니다.
+*   **🎯 Error as Value 패턴**: 예외를 던지지 않고 `Errable<T>` 타입으로 오류를 값처럼 반환합니다. 함수 시그니처만 보고도 오류 발생 가능성을 즉시 파악할 수 있습니다.
+*   **🔒 타입-안전 오류 처리**: 컴파일러가 오류 처리를 강제하여 런타임 예외를 컴파일 타임 체크로 전환합니다.
+*   **⚡ 제로 오버헤드**: `readonly struct` 기반으로 예외 처리의 성능 비용 없이 오류를 값으로 다룹니다.
+*   **🔗 Fluent API**: `Errable.Code("...").With(...).Error(...)`와 같이 메서드 체이닝을 통해 풍부한 컨텍스트를 가진 오류 객체를 쉽게 생성할 수 있습니다.
+*   **📦 자세한 오류 컨텍스트**: 오류 코드, 태그, 사용자 정의 데이터, 원인(Cause) 등 상세한 정보를 오류 객체에 담을 수 있습니다.
+*   **🎨 패턴 매칭**: `Match` 메서드를 사용하여 성공과 실패 케이스를 함수형 스타일로 깔끔하게 처리할 수 있습니다.
+*   **🧠 타입 추론 지원**: `Errable.For<T>()` 팩토리를 통해 제네릭 타입 추론을 완벽하게 지원하여, 더 깔끔하고 읽기 좋은 코드를 작성할 수 있습니다.
+*   **📝 다양한 포맷팅**: 생성된 오류 객체를 로그, 디버깅, 공개 메시지 등 다양한 목적에 맞게 포맷팅할 수 있습니다.
 
 ## 주요 API (Core APIs)
 
@@ -37,27 +75,28 @@ Errable은 .NET을 위한 강력하고 유연한 오류 처리 라이브러리�
 
 ## 사용 예시 (Usage Examples)
 
-### 1. 기본적인 결과 패턴 사용
+### 1. 기본적인 Error as Value 패턴 사용
 
-성공과 실패를 `Errable<T>`로 반환하는 함수를 작성하고, `Match`를 사용하여 결과를 처리합니다.
+성공과 실패를 `Errable<T>`로 **값으로 반환**하는 함수를 작성하고, `Match`를 사용하여 결과를 처리합니다.
 
 ```csharp
-// 사용자 나이를 반환하는 함수 (성공 또는 실패)
+// 사용자 나이를 반환하는 함수 (예외를 던지지 않고 오류를 값으로 반환)
 Errable<int> GetUserAge(string username)
 {
     if (username == "john")
-        return 25; // 성공 시 값을 직접 반환 (암시적 변환)
+        return 25; // ✅ 성공 시 값을 직접 반환 (암시적 변환)
 
-    // 실패 시 오류 빌더를 사용하여 Errable<T> 반환
+    // ✅ 실패 시에도 예외를 던지지 않고 오류를 값으로 반환
     return Errable.For<int>()
         .Code("USER_NOT_FOUND")
         .With("username", username)
         .Errorf("User '{0}' not found", username);
 }
 
-// 함수 사용
+// 함수 사용: 반환 타입을 보면 오류가 발생할 수 있음을 즉시 알 수 있음
 var ageResult = GetUserAge("unknown");
 
+// 패턴 매칭으로 성공/실패 케이스를 명시적으로 처리
 var message = ageResult.Match(
     onSuccess: age => $"User's age is {age}.",
     onError: error => $"Operation failed: {error.Error()}"
@@ -87,24 +126,27 @@ var contextProvider = (IErrorContextProvider)richError;
 // contextProvider.Context["userId"] -> 123
 ```
 
-### 3. 오류 체이닝 (Wrapping)
+### 3. 오류 체이닝 (Wrapping) - 계층 간 오류 전파
 
-한 계층에서 발생한 오류를 상위 계층에서 감싸 더 많은 컨텍스트를 추가합니다.
+한 계층에서 발생한 오류를 상위 계층에서 감싸 더 많은 컨텍스트를 추가합니다. **예외와 달리 오류를 명시적으로 체크하고 전파**해야 합니다.
 
 ```csharp
-// 데이터베이스 계층
+// 데이터베이스 계층 - 예외를 값으로 변환
 Errable<string> DatabaseQuery(string sql)
 {
     var dbException = new InvalidOperationException("Connection timeout");
+    // ✅ 예외를 Error as Value로 변환하여 반환
     return Errable.For<string>()
         .Code("DB_TIMEOUT")
         .Wrap(dbException, "Database query failed");
 }
 
-// 서비스 계층
+// 서비스 계층 - 오류를 명시적으로 체크하고 전파
 Errable<string> ServiceCall(int userId)
 {
     var dbResult = DatabaseQuery($"SELECT * FROM Users WHERE Id = {userId}");
+
+    // ✅ 반환 타입으로 오류 가능성이 명시되므로 체크를 잊을 수 없음
     if (dbResult.IsError)
     {
         // 데이터베이스 오류를 감싸서 서비스 컨텍스트 추가
@@ -119,6 +161,7 @@ Errable<string> ServiceCall(int userId)
 
 var result = ServiceCall(123);
 
+// 오류 체인을 통해 근본 원인까지 추적 가능
 // result.Error.Cause를 통해 내부 오류에 접근 가능
 ```
 
